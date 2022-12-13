@@ -126,16 +126,17 @@ func handleGetBlockchain(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleWriteBlock(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	var m Message
-	validate := validator.New()
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&m); err != nil {
+		log.Println(err.Error())
+		log.Println(m)
 		respondWithJSON(w, r, http.StatusBadRequest, r.Body)
 		return
 	}
 
+	validate := validator.New()
 	validate_err := validate.Struct(m)
 	if validate_err != nil {
 		errs := ValidateErrors{}
